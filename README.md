@@ -28,9 +28,10 @@ Server will default to **http://localhost:3015**
 
 Note: also Items added through Favorites or Featured will be available through here.
 
-	GET     community-server/api/items   // get list of Items
-	GET     community-server/api/recent  // get list of recent Items
-	POST    community-server/api/items   // add to Items and also recent
+	GET     community-server/api/items                 // get list of Items
+	GET     community-server/api/recent                // get list of recently added Items
+	POST    community-server/api/items                 // add new Item
+	DELETE  community-server/api/items/ITEM_REFERENCE  // delete Item
 
 Examples:
 
