@@ -55,7 +55,7 @@ Examples:
 ### Featured (NOT YET SUPPORTED)
 
 	GET     community-server/api/featured                 // get list of featured Items
-	POST    community-server/api/featured/ITEM_REFERENCE  // make featured
+	POST    community-server/api/featured                 // make featured
 	DELETE  community-server/api/featured/ITEM_REFERENCE  // unmake featured
 
 ### Comments (NOT YET SUPPORTED)
@@ -69,19 +69,24 @@ Examples:
 
 ### Collections (NOT YET SUPPORTED)
 
-	GET     community-server/api/collections                                     // get list of Collections
+	GET     community-server/api/collections                                     // get list of all Collections
 	POST    community-server/api/collections                                     // create new Collection
 	DELETE  community-server/api/collections/COLLECTION_ID                       // delete Collection
 
 	GET     community-server/api/users/USER_REFERENCE/collections                // get list of User’s Collections
 
-	POST    community-server/api/collections/COLLECTION_ID/items/ITEM_REFERENCE  // add Item to Collection
+	POST    community-server/api/collections/COLLECTION_ID/items                 // add Item to Collection
 	DELETE  community-server/api/collections/COLLECTION_ID/items/ITEM_REFERENCE  // remove Item from Collection
 
 Note: for POST and DELETE actions, a `user` reference must be present in the body.
 
 
 ## Authentication
+
+TBD
+
+
+## Pagination, filtering, and sorting
 
 TBD
 
