@@ -1,9 +1,9 @@
 'use strict';
 
 var _ = require('lodash');
-var md5 = require('md5');
 var mongoose = require('mongoose');
 var Item = mongoose.model('Item');
+var webhook = require('../helpers/webhook');
 
 module.exports = {
 
@@ -120,6 +120,7 @@ module.exports = {
 					return res.status(400).json(errSave);
 				}
 				else {
+					webhook.sendNotification('favorite', { item: req.body.item, user: req.body.user });
 					return res.json(item);
 				}
 			});

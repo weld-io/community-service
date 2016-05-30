@@ -7,6 +7,8 @@ REST API service for generic community features (favoriting, featuring, comments
 
 Just start with:
 
+	export WEBHOOK_URL=http://localhost:3000/api/my-notification-path # Optional, see “Webhooks” below.
+
 	grunt
 
 Server will default to **http://localhost:3015**
@@ -95,6 +97,8 @@ TBD
 
 Community Service does not store email addresses, it uses a webhook system to support user notifications.
 
+To use it, set the `WEBHOOK_URL` environment variable to the complete URL of where the notification data should be POST:ed.
+
 
 ## Implementation
 
@@ -107,3 +111,4 @@ Built on Node.js, Express, and MongoDB.
 	heroku create MYAPPNAME
 	heroku addons:create mongolab
 	heroku config:set NODE_ENV=production
+	heroku config:set WEBHOOK_URL=https://mainapp.herokuapp.com/api/my-notification-path
