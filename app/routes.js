@@ -19,18 +19,18 @@ module.exports = function (app, config) {
 
 	// Basic CRUD for Items
 	router.get('/api/items', authController.isAuthenticated, itemsController.list);
-	router.get('/api/items/:reference', authController.isAuthenticated, itemsController.read);
+	router.get('/api/items/:itemReference', authController.isAuthenticated, itemsController.read);
 	router.post('/api/items', authController.isAuthenticated, itemsController.create);
-	router.put('/api/items/:reference', authController.isAuthenticated, itemsController.update);
-	router.delete('/api/items/:reference', authController.isAuthenticated, itemsController.delete);
+	router.put('/api/items/:itemReference', authController.isAuthenticated, itemsController.update);
+	router.delete('/api/items/:itemReference', authController.isAuthenticated, itemsController.delete);
 
 	// Recent
 	router.get('/api/recent', authController.isAuthenticated, itemsController.listRecent);
 
 	// Favorites
 	router.get('/api/favorites', authController.isAuthenticated, itemsController.listFavorites);
-	router.post('/api/favorites/:reference', authController.isAuthenticated, itemsController.createFavorite);
-	router.delete('/api/favorites/:reference', authController.isAuthenticated, itemsController.removeFavorite);
+	router.post('/api/favorites', authController.isAuthenticated, itemsController.createFavorite);
+	router.delete('/api/favorites/:itemReference', authController.isAuthenticated, itemsController.removeFavorite);
 
 	//router.get('/', startController.index);
 

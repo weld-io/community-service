@@ -14,9 +14,9 @@ Server will default to **http://localhost:3015**
 
 ## Entities
 
-* **Item**: a Weld project, in this context.
-* **Collection**: group/collection of *Items*.
-* **User**: a Weld user, in this context. Community Service does NOT store email address - callbacks need to be used.
+* **Item**: the main object that should support favoriting, featuring, comments. Use `item` in POST body to supply external reference.
+* **User**: a user that can favorite, feature, comment. Use `user` in POST body to supply external reference. Community Service does NOT store email address - see “Webhooks” below.
+* **Collection**: an ordered group of *Items*.
 * **Comment**: a comment by a *User* on an *Item*.
 
 
@@ -26,44 +26,69 @@ Server will default to **http://localhost:3015**
 
 Note: also Items added through Favorites or Featured will be available through here.
 
-	GET	community-server/api/recent	// get list of recent Items
-	POST	community-server/api/items	// add to Items and also recent
+	GET     community-server/api/items   // get list of Items
+	GET     community-server/api/recent  // get list of recent Items
+	POST    community-server/api/items   // add to Items and also recent
 
-Example:
+Examples:
 
 	curl http://localhost:3015/api/items
 	curl http://localhost:3015/api/recent
-	curl -X POST -H "Content-Type: application/json" -d '{ "reference": "MY_ITEM_ID" }' http://localhost:3015/api/items
+	curl -X POST -H "Content-Type: application/json" -d '{ "item": "MY_ITEM_REFERENCE" }' http://localhost:3015/api/items
 
 ### Favorites
 
-	GET	community-server/api/favorites	// get list of most favorited Items
-	POST	community-server/api/favorites/ITEM_REFERENCE	// make favorite
-	DELETE	community-server/api/favorites/ITEM_REFERENCE	// unmake favorite
+	GET     community-server/api/favorites                       // get list of most favorited Items
+	POST    community-server/api/favorites                       // make favorite
+	DELETE  community-server/api/favorites/ITEM_REFERENCE        // unmake favorite
 
-Example:
+	GET     community-server/api/users/USER_REFERENCE/favorites  // (NOT YET SUPPORTED) get list of User’s favorited Items
+
+Note: for POST and DELETE actions, a `user` reference must be present in the body.
+
+Examples:
 
 	curl http://localhost:3015/api/favorites
-	curl -X POST -H "Content-Type: application/json" -d '{ "user": "MY_USER_ID" }' http://localhost:3015/api/favorites/MY_ITEM_ID
-	curl -X DELETE -H "Content-Type: application/json" -d '{ "user": "MY_USER_ID" }' http://localhost:3015/api/favorites/MY_ITEM_ID
+	curl -X POST -H "Content-Type: application/json" -d '{ "user": "MY_USER_REFERENCE", "item": "MY_ITEM_REFERENCE" }' http://localhost:3015/api/favorites
+	curl -X DELETE -H "Content-Type: application/json" -d '{ "user": "MY_USER_REFERENCE" }' http://localhost:3015/api/favorites/MY_ITEM_ID
 
-### Featured
+### Featured (NOT YET SUPPORTED)
 
-	GET	community-server/api/featured	// get list of featured Items
-	POST	community-server/api/featured/ITEM_REFERENCE	// make featured
-	DELETE	community-server/api/featured/ITEM_REFERENCE	// unmake featured
+	GET     community-server/api/featured                 // get list of featured Items
+	POST    community-server/api/featured/ITEM_REFERENCE  // make featured
+	DELETE  community-server/api/featured/ITEM_REFERENCE  // unmake featured
 
-### Comments
+### Comments (NOT YET SUPPORTED)
 
-> Inconsistent API vs. Favorites above?
+	GET     community-server/api/items/ITEM_REFERENCE/comments             // get list of Comments for Item
+	POST    community-server/api/items/ITEM_REFERENCE/comments             // create Comment (User ID + text)
+	DELETE  community-server/api/items/ITEM_REFERENCE/comments/COMMENT_ID  // delete Comment
 
-	GET	community-server/api/comments/ITEM_REFERENCE	// get list of comments for Item
-	POST	community-server/api/comments/ITEM_REFERENCE	// create comment (User ID + text)
-	DELETE	community-server/api/comments/ITEM_REFERENCE/COMMENT_ID	// unmake featured
+	GET     community-server/api/users/USER_REFERENCE/comments             // get list of User’s Comments on all Items
+	GET     community-server/api/comments                                  // get list of all latest Comments on all Items
 
-### Collections
+### Collections (NOT YET SUPPORTED)
+
+	GET     community-server/api/collections                                     // get list of Collections
+	POST    community-server/api/collections                                     // create new Collection
+	DELETE  community-server/api/collections/COLLECTION_ID                       // delete Collection
+
+	GET     community-server/api/users/USER_REFERENCE/collections                // get list of User’s Collections
+
+	POST    community-server/api/collections/COLLECTION_ID/items/ITEM_REFERENCE  // add Item to Collection
+	DELETE  community-server/api/collections/COLLECTION_ID/items/ITEM_REFERENCE  // remove Item from Collection
+
+Note: for POST and DELETE actions, a `user` reference must be present in the body.
+
+
+## Authentication
 
 TBD
+
+
+## Webhooks
+
+Community Service does not store email addresses, it uses a webhook system to support user notifications.
 
 
 ## Implementation
@@ -77,6 +102,3 @@ Built on Node.js, Express, and MongoDB.
 	heroku create MYAPPNAME
 	heroku addons:create mongolab
 	heroku config:set NODE_ENV=production
-
-	# Set password used in API requests
-	heroku config:set API_PASSWORD=MYPASSWORD

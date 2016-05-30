@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 var findOrCreate = require('mongoose-findorcreate');
 
 var ItemSchema = new Schema({
-	reference: { type: String, unique: true },
+	item: { type: String, unique: true }, // External reference
 	dateCreated: { type: Date, default: Date.now },
 	metadata: {},
 	favoritedBy: {},

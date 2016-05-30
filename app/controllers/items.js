@@ -32,7 +32,7 @@ module.exports = {
 	// Show an Item
 	read: function (req, res, next) {
 		var searchQuery = {};
-		searchQuery.reference = req.params.reference;
+		searchQuery.item = req.params.itemReference;
 		Item.find(searchQuery).lean().exec(function (err, items) {
 			if (err) {
 				return res.status(400).json(err);
@@ -61,15 +61,17 @@ module.exports = {
 
 	// Update an Item
 	update: function (req, res, next) {
+		var searchQuery = {};
+		searchQuery.item = req.params.itemReference;
 		Item.update(
-			{ reference: req.params.reference },
+			searchQuery,
 			req.body,
 			function (updateErr, numberAffected, rawResponse) {
 				if (updateErr) {
 					res.status(500).json(updateErr);
 				}
 				else {
-					res.status(200).json('Updated item ' + req.params.reference);
+					res.status(200).json('Updated item ' + req.params.itemReference);
 				}
 			}
 		);
@@ -77,8 +79,8 @@ module.exports = {
 
 	// Delete an Item
 	delete: function (req, res, next) {
-		var searchQuery;
-		searchQuery.reference = req.params.reference;
+		var searchQuery = {};
+		searchQuery.item = req.params.itemReference;
 		Item.remove(
 			searchQuery,
 			function(itemErr, numberAffected, rawResponse) {
@@ -108,12 +110,12 @@ module.exports = {
 
 	createFavorite: function (req, res, next) {
 		var searchQuery = {};
-		searchQuery.reference = req.params.reference;
+		searchQuery.item = req.body.item;
 		Item.findOrCreate(searchQuery, function (errFind, item, created) {
 			item.favoritedBy = item.favoritedBy || {};
 			item.favoritedBy[req.body.user] = { dateFavorited: new Date() };
 			item.favoritesCount = _.keys(item.favoritedBy).length;
-			Item.update(searchQuery, item, function (errSave) {
+			item.save(function (errSave) {
 				if (errSave) {
 					return res.status(400).json(errSave);
 				}
@@ -126,7 +128,7 @@ module.exports = {
 
 	removeFavorite: function (req, res, next) {
 		var searchQuery = {};
-		searchQuery.reference = req.params.reference;
+		searchQuery.item = req.params.itemReference;
 		Item.findOne(searchQuery).exec(function (errFind, item) {
 			if (errFind) {
 				return res.status(404).json(errFind);
